@@ -38,7 +38,7 @@ function dev_server() {
 
 function livereload_server() {
   cd public
-  exec browser-sync start --server --files "*"
+  exec browser-sync start --server --files "**"
 }
 
 function create_s3_bucket() {
