@@ -28,6 +28,7 @@ learnjs.addProfileLink = function (profile) {
     var link = learnjs.template('profile-link');
     link.find('a').text(profile.email);
     $('.signin-bar').prepend(link);
+    $('.g-signin2').remove();
 };
 
 learnjs.template = function (name) {
