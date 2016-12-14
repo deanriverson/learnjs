@@ -12,7 +12,7 @@
     <script src='/vendor.js'></script>
     <script src='/app.js'></script>
     <style type="text/css" media="all">
-        body { margin-top: 30px; }
+        body { margin-top: 60px; }
         .templates { display: none; }
         .inline-list {
             margin-bottom: 0px;
@@ -39,27 +39,47 @@
             text-decoration: underline;
         }
         .nav-container {
-            padding-left: 40px;
+            padding: 4px 40px;
             background-color: #666666;
+            height: 50px;
         }
         .nav-container a {
+            font-size: 1.5rem;;
             color: white;
         }
+        .signin-bar {
+            text-align: right;
+        }
+        .signin-bar a {
+            padding-right: 10px;
+        }
     </style>
+    <meta name="google-signin-client_id"
+          content="365886695772-02auhh8sbn2qj5a8flemihe5svnvnitg.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
 <div class="markup">
     <div class="nav-container no-select fixed-top u-full-width">
-        <ul class="inline-list hover-links nav-list six columns">
+        <ul class="inline-list hover-links nav-list eight columns">
             <li><a href="#" class="text-lg">LearnJS</a></li>
             <li><a href="#problem-1" class="text-lg">Start</a></li>
         </ul>
+        <div class='four columns signin-bar' style="display: inline-block;">
+          <span class='navbar-padding u-pull-right'>
+            <span class="g-signin2" data-onsuccess="googleSignIn"></span>
+          </span>
+        </div>
     </div>
 
     <div class="container view-container">
     </div>
 
     <div class="templates">
+        <span class='profile-link navbar-padding-lg'>
+            <a href="#profile"></a>
+        </span>
+
         <div class="landing-view">
             <div class="row">
                 <div class="one-half column">
@@ -70,6 +90,11 @@
                     <img src="images/HeroImage.jpg">
                 </div>
             </div>
+        </div>
+
+        <div class='profile-view'>
+            <h3>Your Profile</h3>
+            <div class='email'></div>
         </div>
 
         <div class="problem-view">

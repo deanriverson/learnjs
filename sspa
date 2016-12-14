@@ -160,9 +160,10 @@ function create_identity_pool() {
   fi
   create_cognito_auth_role ${identity_pool_dir}
 
+  echo "identity pool dir ${identity_pool_dir}"
   local pool_id=$(support/jsed.py ${identity_pool_dir}/pool_info.json 'IdentityPoolId')
   local role_arn=$(support/jsed.py ${identity_pool_dir}/role_info.json 'Role.Arn')
-  echo "Updating identity pool roles"
+  echo "Updating identity pool roles '${pool_id}' and '${role_arn}'"
   aws --profile $profile cognito-identity set-identity-pool-roles \
     --identity-pool-id ${pool_id} \
     --roles authenticated=${role_arn}
