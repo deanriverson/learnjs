@@ -81,4 +81,9 @@
         });
         return view;
     };
+
+    /**
+     * Export these for testing purposes
+     */
+    learnjs._applyObject = applyObject;
 })();

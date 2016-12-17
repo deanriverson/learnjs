@@ -56,7 +56,7 @@ describe('LearnJS', function () {
     describe('apply object', function () {
         it('can apply a single object field to markup', function () {
             var elem = $('<div><div data-name="test"></div></div>');
-            learnjs.applyObject({test: 'Testing'}, elem);
+            learnjs._applyObject({test: 'Testing'}, elem);
             expect(elem.find('div[data-name]').text()).toEqual('Testing');
         });
 
@@ -64,7 +64,7 @@ describe('LearnJS', function () {
             var obj = {desc: 'Description', code: "if true"};
             var elem = $('<div><div data-name="desc"></div><div data-name="code"></div></div>');
 
-            learnjs.applyObject(obj, elem);
+            learnjs._applyObject(obj, elem);
             var els = elem.find('div[data-name]');
 
             expect(els[0].textContent).toEqual(obj.desc);
