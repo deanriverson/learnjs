@@ -1,0 +1,63 @@
+body {
+    margin-top: 60px;
+}
+
+.templates {
+    display: none;
+}
+
+/*
+ * Utility Styles
+ */
+.inline-list {
+    margin-bottom: 0px;
+}
+
+.inline-list li {
+    display: inline;
+    margin: 0 20px 0 0;
+}
+
+.fixed-top {
+    position: fixed;
+    top: 0px;
+    z-index: 1024;
+}
+
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hover-links a {
+    text-decoration: none;
+}
+
+.hover-links a:hover {
+    text-decoration: underline;
+}
+
+/*
+ * Navigation Styles
+ */
+.nav-container {
+    padding: 4px 40px;
+    background-color: #666666;
+    height: 50px;
+}
+
+.nav-container a {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.signin-bar {
+    text-align: right;
+}
+
+.signin-bar a {
+    padding-right: 10px;
+    font-size: 1.5rem;
+}
