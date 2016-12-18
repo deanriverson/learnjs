@@ -9,6 +9,30 @@
 
     learnjs.aws = {};
 
+    function sendDbRequest(req, retry) {
+        var promise = new $.Deferred();
+        req.on('error', function (error) {
+            if (error.code === "CredentialsError") {
+                learnjs.identity.then(function (identity) {
+                    return identity.refresh().then(function () {
+                        return retry();
+                    }, function () {
+                        promise.reject(resp);
+                    });
+                });
+            } else {
+                promise.reject(error);
+            }
+        });
+
+        req.on('success', function (resp) {
+            promise.resolve(resp.data);
+        });
+
+        req.send();
+        return promise;
+    }
+
     learnjs.aws.refresh = function () {
         var deferred = new $.Deferred();
         AWS.config.credentials.refresh(function (err) {
@@ -18,7 +42,55 @@
         return deferred.promise();
     };
 
-    learnjs.googleSignIn = function(googleUser) {
+    learnjs.aws.fetchAnswer = function (problemId) {
+        return learnjs.identity.then(function (identity) {
+            var db = new AWS.DynamoDB.DocumentClient();
+            var item = {
+                TableName: 'learnjs',
+                Key: {
+                    userId: identity.id,
+                    problemId: problemId
+                }
+            };
+            return sendDbRequest(db.get(item), function () {
+                return learnjs.fetchAnswer(problemId);
+            })
+        });
+    };
+
+    learnjs.aws.countAnswers = function (problemId) {
+        return learnjs.identity.then(function (identity) {
+            var db = new AWS.DynamoDB.DocumentClient();
+            var params = {
+                TableName: 'learnjs',
+                Select: 'COUNT',
+                FilterExpression: 'problemId = :problemId',
+                ExpressionAttributeValues: {':problemId': problemId}
+            };
+            return sendDbRequest(db.scan(params), function () {
+                return learnjs.countAnswers(problemId);
+            })
+        });
+    };
+
+    learnjs.aws.saveAnswer = function (problemId, answer) {
+        return learnjs.identity.then(function (identity) {
+            var db = new AWS.DynamoDB.DocumentClient();
+            var item = {
+                TableName: 'learnjs',
+                Item: {
+                    userId: identity.id,
+                    problemId: problemId,
+                    answer: answer
+                }
+            };
+            return sendDbRequest(db.put(item), function () {
+                return learnjs.saveAnswer(problemId, answer);
+            })
+        });
+    };
+
+    learnjs.googleSignIn = function (googleUser) {
         var id_token = googleUser.getAuthResponse().id_token;
 
         AWS.config.update({
@@ -31,16 +103,16 @@
             })
         });
 
-        learnjs.aws.refresh().then(function(id) {
+        learnjs.aws.refresh().then(function (id) {
             learnjs.identity.resolve({
                 id: id,
                 email: googleUser.getBasicProfile().getEmail(),
-                refresh: refresh
+                refresh: refreshGoogle
             });
         });
     };
 
-    function refresh() {
+    function refreshGoogle() {
         return gapi.auth2.getAuthInstance().signIn({
             prompt: 'login'
         }).then(function(userUpdate) {
@@ -50,3 +122,9 @@
         });
     }
 })();
+
+/**
+ * Expose the google sign in method as a global function since that's what's expected by the
+ * callback in the Google markup (span.g-signin2 element in index.html).
+ */
+window.googleSignIn = learnjs.googleSignIn;

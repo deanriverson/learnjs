@@ -39,16 +39,18 @@
         var problemData = learnjs.problems[problemNumber - 1];
         var resultFlash = view.find('.result');
 
-        function checkAnswer() {
-            var answer = view.find('.answer').val();
+        function checkAnswer(answer) {
             var test = problemData.code.replace('__', answer) + '; problem();';
             return eval(test);
         }
 
         function checkAnswerClick() {
-            if (checkAnswer()) {
+            var answer = view.find('.answer').val();
+
+            if (checkAnswer(answer)) {
                 var correctFlash = buildCorrectFlash(problemNumber);
                 flashElement(resultFlash, correctFlash);
+                learnjs.aws.saveAnswer(problemNumber, answer);
             } else {
                 flashElement(resultFlash, 'Incorrect!');
             }
@@ -63,6 +65,12 @@
                 buttonItem.remove();
             });
         }
+
+        learnjs.aws.fetchAnswer(problemNumber).then(function(data) {
+            if (data.Item) {
+                view.find('.answer').val(data.Item.answer);
+            }
+        });
 
         view.find('.check-btn').click(checkAnswerClick);
         view.find('.title').text('Problem #' + problemNumber);
